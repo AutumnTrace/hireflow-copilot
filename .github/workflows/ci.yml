@@ -25,8 +25,12 @@ jobs:
         run: uv run pytest -q
       - name: README test count matches the suite
         run: |
-          expected=$(grep -oP '# K[0-9]+(?= tests)' README.md)
+          expected=$(grep -oP '# \K[0-9]+(?= tests)' README.md || true)
           actual=$(uv run pytest --collect-only -q | tail -1 | grep -oP '^[0-9]+')
+          if [ -z "$expected" ]; then
+            echo "::error file=README.md::No '# N tests' line found in the Development section."
+            exit 1
+          fi
           if [ "$expected" != "$actual" ]; then
             echo "::error file=README.md::README says $expected tests, the suite has $actual. Update the Development section."
             exit 1
