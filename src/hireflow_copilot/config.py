@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     # --- HireFlow ------------------------------------------------------------------------------
     # "fixtures" serves the bundled demo dataset; "graphql" talks to a running HireFlow API.
     source: Literal["fixtures", "graphql"] = "fixtures"
+    # Which bundled dataset fixture mode serves: "seed", or "web-demo" to match the HireFlow Web demo.
+    fixture: Literal["seed", "web-demo"] = "seed"
     hireflow_url: str = "http://localhost:5230/graphql"
     # A bearer token for HireFlow, or leave empty and set dev_token=true to mint one from /auth/token.
     hireflow_token: SecretStr | None = None
@@ -52,6 +54,10 @@ class Settings(BaseSettings):
     access_key: SecretStr | None = None
     # Trust X-Forwarded-For for client IPs (only behind a proxy you control, e.g. Azure Container Apps).
     trust_proxy: bool = False
+
+    # --- Browser access -------------------------------------------------------------------------
+    # Origins allowed to call the API from a browser (HireFlow Web dev server and preview by default).
+    cors_origins: list[str] = ["http://localhost:5173", "http://localhost:4173"]
 
     # --- Observability -------------------------------------------------------------------------
     otel_exporter: Literal["none", "console", "otlp", "azure"] = "none"

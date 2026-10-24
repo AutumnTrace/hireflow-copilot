@@ -205,3 +205,15 @@ def test_agent_stops_at_step_limit() -> None:
     assert body["stop"] == "max_steps"
     assert len(fake.messages.requests) == 2
     assert "Stopped after 2 steps" in body["answer"]
+
+
+def test_cors_allows_the_web_app(demo_client: TestClient) -> None:
+    response = demo_client.options(
+        "/v1/ask",
+        headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "POST"},
+    )
+    assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
+    blocked = demo_client.options(
+        "/v1/ask", headers={"Origin": "https://evil.example", "Access-Control-Request-Method": "POST"}
+    )
+    assert "access-control-allow-origin" not in blocked.headers

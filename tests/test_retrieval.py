@@ -56,3 +56,12 @@ def test_skill_match_matches_hireflow_rules() -> None:
     assert match.matched_skills == ["C#"]
     assert match.missing_skills == [".NET", "GraphQL"]
     assert SkillMatch.evaluate([], ["anything"]).score == 1.0
+
+
+def test_web_demo_fixture_matches_the_board() -> None:
+    snapshot = asyncio.run(FixtureHireFlowClient(fixture="web-demo").snapshot())
+    assert len(snapshot.candidates) == 14
+    ana = next(c for c in snapshot.candidates if c.full_name == "Ana Popescu")
+    app = next(a for a in snapshot.applications if a.candidate_id == ana.id and a.stage == "INTERVIEW")
+    # "+1d@14" in the export: tomorrow at 14:00 UTC, exactly as the web demo builds it.
+    assert any(i.scheduled_at.hour == 14 for i in app.interviews)

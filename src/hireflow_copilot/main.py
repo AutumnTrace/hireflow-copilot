@@ -12,6 +12,7 @@ from typing import Annotated, Literal
 
 import anthropic
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import BaseModel, Field
 
@@ -44,7 +45,7 @@ def build_hireflow(settings: Settings) -> HireFlowClient:
     if settings.source == "graphql":
         token = settings.hireflow_token.get_secret_value() if settings.hireflow_token else None
         return GraphQLHireFlowClient(settings.hireflow_url, token=token, dev_token=settings.hireflow_dev_token)
-    return FixtureHireFlowClient()
+    return FixtureHireFlowClient(fixture=settings.fixture)
 
 
 def build_embedder(settings: Settings) -> Embedder:
@@ -90,6 +91,14 @@ def create_app(
         version="0.1.0",
         description="RAG and a tool-using Claude agent over the HireFlow GraphQL API.",
         lifespan=lifespan,
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_methods=["GET", "POST"],
+        allow_headers=["content-type", "x-copilot-key"],
+        expose_headers=["retry-after"],
     )
 
     if settings.otel_exporter != "none":
@@ -177,6 +186,7 @@ def _routes(app: FastAPI) -> FastAPI:
             "status": "ok",
             "mode": "demo" if svc.claude is None else "llm",
             "source": svc.settings.source,
+            "fixture": svc.settings.fixture if svc.settings.source == "fixtures" else None,
             "model": svc.settings.model if svc.claude else None,
             "embedder": svc.kb.embedder.name,
             "documents": len(svc.kb.index.documents),
