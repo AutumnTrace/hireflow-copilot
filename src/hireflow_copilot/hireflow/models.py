@@ -86,7 +86,13 @@ class SkillMatch(Model):
     def evaluate(cls, required: list[str], offered: list[str]) -> SkillMatch:
         """Port of HireFlow.Domain.Jobs.SkillMatch.Evaluate: case-insensitive share of required skills."""
         have = {s.lower() for s in offered}
-        unique = list(dict.fromkeys(required, None))
+        # Distinct(StringComparer.OrdinalIgnoreCase): drop case-insensitive repeats, keep the first spelling.
+        unique: list[str] = []
+        seen: set[str] = set()
+        for skill in required:
+            if skill.lower() not in seen:
+                seen.add(skill.lower())
+                unique.append(skill)
         matched = [s for s in unique if s.lower() in have]
         missing = [s for s in unique if s.lower() not in have]
         score = 1.0 if not unique else round(len(matched) / len(unique), 3)
