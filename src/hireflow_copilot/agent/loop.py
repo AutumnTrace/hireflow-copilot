@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Literal
 
 from opentelemetry import trace
 from pydantic import BaseModel
@@ -46,7 +46,10 @@ class ToolCall(BaseModel):
 
 class ProposedAction(BaseModel):
     id: str
+    kind: Literal["move_application", "schedule_interview"]
     summary: str
+    # The mutation's input, so a client holding its own HireFlow session can apply it directly.
+    params: dict[str, Any]
     confirm_url: str
 
 
@@ -132,7 +135,10 @@ async def run_agent(message: str, ctx: ToolContext, claude: Claude) -> AgentResu
         steps=usage.calls,
         tool_calls=calls,
         proposed_actions=[
-            ProposedAction(id=a.id, summary=a.summary, confirm_url=f"/v1/actions/{a.id}/confirm") for a in ctx.proposed
+            ProposedAction(
+                id=a.id, kind=a.kind, summary=a.summary, params=a.params, confirm_url=f"/v1/actions/{a.id}/confirm"
+            )
+            for a in ctx.proposed
         ],
         usage={
             "input_tokens": usage.input_tokens,

@@ -52,6 +52,7 @@ def test_ask_sends_search_results_and_renders_citations() -> None:
 
     assert body["answer"] == "Elena Ciobanu has Kafka experience.[1]"
     assert body["sources"][0]["quotes"] == ["Skills: Python, Kafka, SQL."]
+    assert body["sources"][0]["candidate_id"]  # lets a UI link the citation to the candidate page
     request = fake.messages.requests[0]
     blocks = request["messages"][0]["content"]
     assert blocks[0]["type"] == "search_result" and blocks[0]["citations"] == {"enabled": True}
@@ -113,6 +114,8 @@ def test_agent_proposes_then_human_confirms() -> None:
         assert body["steps"] == 2
         action = body["proposed_actions"][0]
         assert "Victoria Sandu from SCREENING to INTERVIEW" in action["summary"]
+        assert action["kind"] == "move_application"
+        assert action["params"] == {"application_id": APP_VICTORIA, "stage": "INTERVIEW", "note": "Great screen"}
 
         kb = client.app.state.services.kb  # type: ignore[attr-defined]
         assert kb.snapshot.application(APP_VICTORIA).stage == "SCREENING"  # proposing changed nothing
@@ -202,3 +205,4 @@ def test_agent_stops_at_step_limit() -> None:
     assert body["stop"] == "max_steps"
     assert len(fake.messages.requests) == 2
     assert "Stopped after 2 steps" in body["answer"]
+
