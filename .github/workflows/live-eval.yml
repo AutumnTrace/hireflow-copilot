@@ -1,0 +1,39 @@
+name: Live eval
+
+# Calls the real Claude API, so it only runs when started by hand, with a spend cap.
+on:
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: Maximum spend in USD
+        default: "0.50"
+      only:
+        description: Comma-separated case ids (empty = all)
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  live-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Run
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BUDGET: ${{ inputs.budget }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          args=(--budget "$BUDGET" --json eval-results.json)
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          uv run python evals/run_live.py "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-eval
+          path: eval-results.json

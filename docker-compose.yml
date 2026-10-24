@@ -1,0 +1,58 @@
+# The whole stack: PostgreSQL, the HireFlow GraphQL API (built straight from its GitHub repo),
+# and the copilot reading from it.
+#
+#   cp .env.example .env    # add ANTHROPIC_API_KEY, or leave it empty for demo mode
+#   docker compose up --build
+#
+# Copilot:  http://localhost:8000/docs
+# HireFlow: http://localhost:8080/graphql
+# Jaeger:   http://localhost:16686   (traces)
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: hireflow
+      POSTGRES_PASSWORD: hireflow
+      POSTGRES_DB: hireflow
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hireflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  hireflow:
+    build: https://github.com/AutumnTrace/hireflow.git#main
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      Database__Provider: Postgres
+      ConnectionStrings__HireFlow: Host=db;Database=hireflow;Username=hireflow;Password=hireflow
+      # Demo-only settings. Use a real secret and identity provider in production.
+      Jwt__SigningKey: docker-demo-signing-key-change-me-0123456789
+      Jwt__EnableDevTokens: "true"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    ports:
+      - "16686:16686"
+
+  copilot:
+    build: .
+    depends_on:
+      - hireflow
+      - jaeger
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      COPILOT_SOURCE: graphql
+      COPILOT_HIREFLOW_URL: http://hireflow:8080/graphql
+      COPILOT_OTEL_EXPORTER: otlp
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+    restart: on-failure

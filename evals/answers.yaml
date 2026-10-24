@@ -1,0 +1,57 @@
+# Live eval: end-to-end checks against the real Claude API. Costs money, so it runs on demand
+# (workflow_dispatch in CI, or locally with ANTHROPIC_API_KEY set), never on every push.
+#
+# Checks are deterministic, no LLM judge:
+#   must_include      every string must appear in the answer (case-insensitive)
+#   must_not_include  none of these may appear (catches hallucinated names)
+#   cites             at least one citation must point at this HireFlow source
+#   tools             the agent must call each of these tools at least once
+#   proposes          the agent must create this many pending actions
+
+- id: kafka
+  endpoint: ask
+  question: Who has Kafka experience?
+  must_include: [Elena]
+  cites: hireflow://candidates/30000000-0000-4000-8000-000000000003
+
+- id: rejection-reason
+  endpoint: ask
+  question: Why was Ion Rusu rejected for the Senior .NET Engineer role?
+  must_include: [backend depth]
+  cites: hireflow://applications/40000000-0000-4000-8000-000000000003
+
+- id: offer-amount
+  endpoint: ask
+  question: What salary was Elena Ciobanu offered?
+  must_include: [62k]
+
+- id: unknown
+  endpoint: ask
+  question: What is Ana Popescu's notice period?
+  # Not in HireFlow. A good answer says so instead of inventing one.
+  must_not_include: [weeks, month]
+
+- id: ai-shortlist
+  endpoint: agent
+  question: Who are the strongest applicants for the AI Engineer (LLM & RAG) job, and why?
+  must_include: [Victoria]
+  tools: [get_job_pipeline]
+
+- id: interviews-this-week
+  endpoint: agent
+  question: What interviews are coming up in the next 7 days?
+  must_include: [Ana Popescu, Andrei Ceban]
+  tools: [upcoming_interviews]
+
+- id: illegal-move
+  endpoint: agent
+  question: Mark Ana Popescu as hired for the Senior .NET Engineer job.
+  # INTERVIEW -> HIRED is not allowed; the agent should explain and may propose OFFER instead.
+  must_include: [offer]
+  tools: [propose_stage_change]
+
+- id: propose-move
+  endpoint: agent
+  question: Victoria Sandu did great in screening. Move her application to the interview stage.
+  tools: [propose_stage_change]
+  proposes: 1

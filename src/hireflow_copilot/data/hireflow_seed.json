@@ -1,0 +1,181 @@
+{
+  "_comment": "HireFlow's own demo seed (DatabaseInitializer.cs) plus extra candidates, jobs and interview notes so retrieval has something to rank. Dates like \"+2d\" are relative to load time.",
+  "companies": [
+    { "id": "10000000-0000-4000-8000-000000000001", "name": "Northwind Labs", "industry": "Developer Tools", "location": "Chișinău, MD" },
+    { "id": "10000000-0000-4000-8000-000000000002", "name": "Bluefin Analytics", "industry": "Data & AI", "location": "Bucharest, RO" },
+    { "id": "10000000-0000-4000-8000-000000000003", "name": "Orbit Commerce", "industry": "E-commerce", "location": "Remote (EU)" }
+  ],
+  "jobs": [
+    {
+      "id": "20000000-0000-4000-8000-000000000001", "companyId": "10000000-0000-4000-8000-000000000001",
+      "title": "Senior .NET Engineer",
+      "description": "Own our GraphQL gateway and the services behind it. You will design schemas, tune EF Core queries and mentor two engineers.",
+      "location": "Chișinău, MD", "workMode": "HYBRID", "employmentType": "FULL_TIME", "status": "OPEN",
+      "salary": { "min": 42000, "max": 60000, "currency": "EUR" }, "requiredSkills": ["C#", ".NET", "GraphQL", "PostgreSQL"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000002", "companyId": "10000000-0000-4000-8000-000000000001",
+      "title": "Full-Stack Developer (.NET + React)",
+      "description": "Ship features end to end across our React front end and ASP.NET Core APIs.",
+      "location": "Chișinău, MD", "workMode": "ONSITE", "employmentType": "FULL_TIME", "status": "OPEN",
+      "salary": { "min": 30000, "max": 45000, "currency": "EUR" }, "requiredSkills": ["C#", "React", "TypeScript"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000003", "companyId": "10000000-0000-4000-8000-000000000002",
+      "title": "Data Platform Engineer",
+      "description": "Build ingestion pipelines and the APIs our analysts query every day.",
+      "location": "Bucharest, RO", "workMode": "REMOTE", "employmentType": "FULL_TIME", "status": "OPEN",
+      "salary": { "min": 50000, "max": 70000, "currency": "EUR" }, "requiredSkills": ["Python", "SQL", "Kafka"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000004", "companyId": "10000000-0000-4000-8000-000000000003",
+      "title": "Backend Intern",
+      "description": "Six-month internship working on order processing in .NET.",
+      "location": null, "workMode": "REMOTE", "employmentType": "INTERNSHIP", "status": "OPEN",
+      "salary": null, "requiredSkills": ["C#"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000005", "companyId": "10000000-0000-4000-8000-000000000003",
+      "title": "GraphQL Consultant",
+      "description": "Three-month contract to migrate our REST storefront API to GraphQL.",
+      "location": null, "workMode": "REMOTE", "employmentType": "CONTRACT", "status": "CLOSED",
+      "salary": { "min": 6000, "max": 9000, "currency": "EUR" }, "requiredSkills": ["GraphQL", "Hot Chocolate"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000006", "companyId": "10000000-0000-4000-8000-000000000002",
+      "title": "ML Engineer",
+      "description": "Draft posting, not yet published.",
+      "location": "Bucharest, RO", "workMode": "HYBRID", "employmentType": "FULL_TIME", "status": "DRAFT",
+      "salary": null, "requiredSkills": []
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000007", "companyId": "10000000-0000-4000-8000-000000000002",
+      "title": "AI Engineer (LLM & RAG)",
+      "description": "Design and ship LLM features for our analytics product: retrieval-augmented generation over customer reports, tool-using agents that call our internal APIs, and the evaluation harness that tells us whether a prompt change helped. You will own deployment on Azure Container Apps, tracing in Application Insights and the CI pipeline that runs offline evals on every pull request.",
+      "location": "Bucharest, RO", "workMode": "HYBRID", "employmentType": "FULL_TIME", "status": "OPEN",
+      "salary": { "min": 55000, "max": 75000, "currency": "EUR" }, "requiredSkills": ["Python", "LLM", "RAG", "Azure", "Docker"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000008", "companyId": "10000000-0000-4000-8000-000000000001",
+      "title": "DevOps Engineer (Azure)",
+      "description": "Run our build and release pipelines and the Azure estate behind them. Terraform for infrastructure, GitHub Actions for CI/CD, Kubernetes for the GraphQL gateway. On-call one week in six.",
+      "location": "Chișinău, MD", "workMode": "HYBRID", "employmentType": "FULL_TIME", "status": "OPEN",
+      "salary": { "min": 40000, "max": 58000, "currency": "EUR" }, "requiredSkills": ["Azure", "Terraform", "Kubernetes", "CI/CD"]
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000009", "companyId": "10000000-0000-4000-8000-000000000003",
+      "title": "QA Automation Engineer",
+      "description": "Own end-to-end tests for checkout and payments. Playwright with TypeScript, contract tests for our APIs, and flaky-test triage in CI.",
+      "location": null, "workMode": "REMOTE", "employmentType": "FULL_TIME", "status": "OPEN",
+      "salary": { "min": 28000, "max": 40000, "currency": "EUR" }, "requiredSkills": ["Playwright", "TypeScript", "API testing"]
+    }
+  ],
+  "candidates": [
+    { "id": "30000000-0000-4000-8000-000000000001", "fullName": "Ana Popescu", "email": "ana.popescu@example.com", "headline": "Backend engineer, 6 years in .NET", "yearsOfExperience": 6, "skills": ["C#", ".NET", "SQL"] },
+    { "id": "30000000-0000-4000-8000-000000000002", "fullName": "Ion Rusu", "email": "ion.rusu@example.com", "headline": "Full-stack developer", "yearsOfExperience": 4, "skills": ["React", "C#", "TypeScript"] },
+    { "id": "30000000-0000-4000-8000-000000000003", "fullName": "Elena Ciobanu", "email": "elena.ciobanu@example.com", "headline": "Data engineer", "yearsOfExperience": 5, "skills": ["Python", "Kafka", "SQL"] },
+    { "id": "30000000-0000-4000-8000-000000000004", "fullName": "Mihai Lungu", "email": "mihai.lungu@example.com", "headline": "CS student", "yearsOfExperience": 0, "skills": ["C#"] },
+    { "id": "30000000-0000-4000-8000-000000000005", "fullName": "Victoria Sandu", "email": "victoria.sandu@example.com", "headline": "ML engineer shipping LLM features in production", "yearsOfExperience": 5, "skills": ["Python", "LLM", "RAG", "Azure", "PyTorch"] },
+    { "id": "30000000-0000-4000-8000-000000000006", "fullName": "Andrei Ceban", "email": "andrei.ceban@example.com", "headline": "Platform engineer, Azure and Kubernetes", "yearsOfExperience": 7, "skills": ["Azure", "Kubernetes", "Terraform", "CI/CD", "Docker"] },
+    { "id": "30000000-0000-4000-8000-000000000007", "fullName": "Sergiu Botnari", "email": "sergiu.botnari@example.com", "headline": "Python backend developer", "yearsOfExperience": 4, "skills": ["Python", "FastAPI", "PostgreSQL", "Docker"] },
+    { "id": "30000000-0000-4000-8000-000000000008", "fullName": "Daniela Rotaru", "email": "daniela.rotaru@example.com", "headline": "QA automation engineer", "yearsOfExperience": 3, "skills": ["Playwright", "TypeScript", "API testing"] },
+    { "id": "30000000-0000-4000-8000-000000000009", "fullName": "Natalia Grosu", "email": "natalia.grosu@example.com", "headline": "Front-end developer", "yearsOfExperience": 3, "skills": ["React", "TypeScript", "CSS"] }
+  ],
+  "applications": [
+    {
+      "id": "40000000-0000-4000-8000-000000000001", "jobPostingId": "20000000-0000-4000-8000-000000000001", "candidateId": "30000000-0000-4000-8000-000000000001",
+      "stage": "INTERVIEW", "appliedAt": "-12d",
+      "coverLetter": "I've been building GraphQL APIs on Hot Chocolate since v12.",
+      "history": [
+        { "from": null, "to": "APPLIED", "note": null, "changedAt": "-12d" },
+        { "from": "APPLIED", "to": "SCREENING", "note": "Strong CV", "changedAt": "-10d" },
+        { "from": "SCREENING", "to": "INTERVIEW", "note": null, "changedAt": "-4d" }
+      ],
+      "interviews": [
+        { "id": "50000000-0000-4000-8000-000000000001", "applicationId": "40000000-0000-4000-8000-000000000001", "kind": "TECHNICAL", "scheduledAt": "+2d", "durationMinutes": 60, "interviewer": "Victor Moraru" },
+        { "id": "50000000-0000-4000-8000-000000000002", "applicationId": "40000000-0000-4000-8000-000000000001", "kind": "PHONE_SCREEN", "scheduledAt": "-3d", "durationMinutes": 30, "interviewer": "Irina Balan", "rating": 4, "feedback": "Clear communicator, solid fundamentals." }
+      ]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000002", "jobPostingId": "20000000-0000-4000-8000-000000000002", "candidateId": "30000000-0000-4000-8000-000000000002",
+      "stage": "SCREENING", "appliedAt": "-9d",
+      "history": [
+        { "from": null, "to": "APPLIED", "note": null, "changedAt": "-9d" },
+        { "from": "APPLIED", "to": "SCREENING", "note": null, "changedAt": "-7d" }
+      ]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000003", "jobPostingId": "20000000-0000-4000-8000-000000000001", "candidateId": "30000000-0000-4000-8000-000000000002",
+      "stage": "REJECTED", "appliedAt": "-11d",
+      "history": [
+        { "from": null, "to": "APPLIED", "note": null, "changedAt": "-11d" },
+        { "from": "APPLIED", "to": "REJECTED", "note": "Looking for more backend depth", "changedAt": "-8d" }
+      ]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000004", "jobPostingId": "20000000-0000-4000-8000-000000000003", "candidateId": "30000000-0000-4000-8000-000000000003",
+      "stage": "OFFER", "appliedAt": "-20d",
+      "history": [
+        { "from": null, "to": "APPLIED", "note": null, "changedAt": "-20d" },
+        { "from": "APPLIED", "to": "SCREENING", "note": null, "changedAt": "-18d" },
+        { "from": "SCREENING", "to": "INTERVIEW", "note": null, "changedAt": "-14d" },
+        { "from": "INTERVIEW", "to": "OFFER", "note": "Offer sent: 62k EUR", "changedAt": "-2d" }
+      ],
+      "interviews": [
+        { "id": "50000000-0000-4000-8000-000000000003", "applicationId": "40000000-0000-4000-8000-000000000004", "kind": "ONSITE", "scheduledAt": "-5d", "durationMinutes": 180, "interviewer": "Radu Stoica", "rating": 5, "feedback": "Best data-modelling answers this quarter." }
+      ]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000005", "jobPostingId": "20000000-0000-4000-8000-000000000004", "candidateId": "30000000-0000-4000-8000-000000000004",
+      "stage": "APPLIED", "appliedAt": "-1d",
+      "history": [{ "from": null, "to": "APPLIED", "note": null, "changedAt": "-1d" }]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000006", "jobPostingId": "20000000-0000-4000-8000-000000000007", "candidateId": "30000000-0000-4000-8000-000000000005",
+      "stage": "SCREENING", "appliedAt": "-6d",
+      "coverLetter": "At my current company I built a RAG assistant over 40k support tickets: hybrid BM25 plus vector retrieval, citations on every answer, and a nightly eval set of 300 questions that gates releases. It runs on Azure Container Apps with traces in Application Insights.",
+      "history": [
+        { "from": null, "to": "APPLIED", "note": null, "changedAt": "-6d" },
+        { "from": "APPLIED", "to": "SCREENING", "note": "Production RAG and evals experience, exactly the profile", "changedAt": "-5d" }
+      ],
+      "interviews": [
+        { "id": "50000000-0000-4000-8000-000000000004", "applicationId": "40000000-0000-4000-8000-000000000006", "kind": "PHONE_SCREEN", "scheduledAt": "-4d", "durationMinutes": 30, "interviewer": "Irina Balan", "rating": 5, "feedback": "Explained chunking trade-offs and how she measured retrieval recall before and after a re-ranker. Wants to grow into agent work. Salary expectation 70k EUR." }
+      ]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000007", "jobPostingId": "20000000-0000-4000-8000-000000000007", "candidateId": "30000000-0000-4000-8000-000000000007",
+      "stage": "APPLIED", "appliedAt": "-3d",
+      "coverLetter": "Four years of Python APIs with FastAPI and PostgreSQL. I have not shipped an LLM feature at work yet, but I built a side project that summarises GitHub issues with Claude and I'm keen to move into AI engineering.",
+      "history": [{ "from": null, "to": "APPLIED", "note": null, "changedAt": "-3d" }]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000008", "jobPostingId": "20000000-0000-4000-8000-000000000008", "candidateId": "30000000-0000-4000-8000-000000000006",
+      "stage": "INTERVIEW", "appliedAt": "-15d",
+      "coverLetter": "I migrated a 60-service estate from Azure VMs to AKS with Terraform and cut deployment time from 40 minutes to 6.",
+      "history": [
+        { "from": null, "to": "APPLIED", "note": null, "changedAt": "-15d" },
+        { "from": "APPLIED", "to": "SCREENING", "note": null, "changedAt": "-13d" },
+        { "from": "SCREENING", "to": "INTERVIEW", "note": "Strong Terraform, ask about incident handling", "changedAt": "-8d" }
+      ],
+      "interviews": [
+        { "id": "50000000-0000-4000-8000-000000000005", "applicationId": "40000000-0000-4000-8000-000000000008", "kind": "SYSTEM_DESIGN", "scheduledAt": "-6d", "durationMinutes": 90, "interviewer": "Victor Moraru", "rating": 3, "feedback": "Good on infrastructure as code, weaker on observability: could not explain how he would alert on error-budget burn. Not a blocker for a mid-level role." },
+        { "id": "50000000-0000-4000-8000-000000000006", "applicationId": "40000000-0000-4000-8000-000000000008", "kind": "BEHAVIORAL", "scheduledAt": "+3d", "durationMinutes": 45, "interviewer": "Irina Balan" }
+      ]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000009", "jobPostingId": "20000000-0000-4000-8000-000000000009", "candidateId": "30000000-0000-4000-8000-000000000008",
+      "stage": "SCREENING", "appliedAt": "-5d",
+      "coverLetter": "I maintain a Playwright suite of 900 tests and brought the flaky rate under 1% by quarantining and fixing the worst offenders weekly.",
+      "history": [
+        { "from": null, "to": "APPLIED", "note": null, "changedAt": "-5d" },
+        { "from": "APPLIED", "to": "SCREENING", "note": null, "changedAt": "-4d" }
+      ]
+    },
+    {
+      "id": "40000000-0000-4000-8000-000000000010", "jobPostingId": "20000000-0000-4000-8000-000000000002", "candidateId": "30000000-0000-4000-8000-000000000009",
+      "stage": "APPLIED", "appliedAt": "-2d",
+      "coverLetter": "Front-end focused, three years of React and TypeScript. No C# yet but happy to learn the ASP.NET side.",
+      "history": [{ "from": null, "to": "APPLIED", "note": null, "changedAt": "-2d" }]
+    }
+  ]
+}

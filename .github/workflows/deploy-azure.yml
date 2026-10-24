@@ -1,0 +1,37 @@
+name: Deploy to Azure
+
+# Manual. Needs a federated credential (OIDC) for this repo and these secrets:
+# AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID, and optionally ANTHROPIC_API_KEY.
+on:
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        default: rg-hireflow-copilot
+      demo_mode:
+        description: Deploy without the Claude key
+        type: boolean
+        default: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: azure
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy Bicep
+        env:
+          KEY: ${{ inputs.demo_mode && '' || secrets.ANTHROPIC_API_KEY }}
+          RG: ${{ inputs.resource_group }}
+        run: |
+          az deployment group create -g "$RG" -f infra/azure/main.bicep \
+            -p image=ghcr.io/autumntrace/hireflow-copilot:${{ github.sha }} anthropicApiKey="$KEY" \
+            --query properties.outputs.url.value -o tsv

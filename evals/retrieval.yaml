@@ -1,0 +1,96 @@
+# Retrieval eval: for each question, the HireFlow records a good search must surface.
+# `relevant` lists document ids (kind:uuid). Any one of them in the top k counts as a hit;
+# recall@k counts how many of them made it. Runs offline, no API key, on every CI build.
+#
+# Ids: jobs 2000..., candidates 3000..., applications 4000... (see src/hireflow_copilot/data/hireflow_seed.json)
+
+- question: Who has Kafka experience?
+  relevant:
+    - candidate:30000000-0000-4000-8000-000000000003
+    - application:40000000-0000-4000-8000-000000000004
+
+- question: Which candidates have built retrieval-augmented generation in production?
+  relevant:
+    - application:40000000-0000-4000-8000-000000000006
+    - candidate:30000000-0000-4000-8000-000000000005
+
+- question: Why was Ion Rusu rejected for the Senior .NET role?
+  relevant:
+    - application:40000000-0000-4000-8000-000000000003
+
+- question: Which interviewer feedback mentions weak observability or alerting?
+  relevant:
+    - application:40000000-0000-4000-8000-000000000008
+
+- question: What salary did we offer Elena?
+  relevant:
+    - application:40000000-0000-4000-8000-000000000004
+
+- question: Is there a remote QA role using Playwright?
+  relevant:
+    - job:20000000-0000-4000-8000-000000000009
+
+- question: Who applied to the AI Engineer job without professional LLM experience?
+  relevant:
+    - application:40000000-0000-4000-8000-000000000007
+
+- question: Hot Chocolate GraphQL experience
+  relevant:
+    - application:40000000-0000-4000-8000-000000000001
+    - job:20000000-0000-4000-8000-000000000005
+
+- question: Jobs that need Terraform and Kubernetes
+  relevant:
+    - job:20000000-0000-4000-8000-000000000008
+
+- question: Front-end developer who has no C# yet
+  relevant:
+    - application:40000000-0000-4000-8000-000000000010
+    - candidate:30000000-0000-4000-8000-000000000009
+
+- question: Who scored 5 out of 5 in an interview?
+  relevant:
+    - application:40000000-0000-4000-8000-000000000004
+    - application:40000000-0000-4000-8000-000000000006
+
+- question: Internship for a computer science student
+  relevant:
+    - job:20000000-0000-4000-8000-000000000004
+    - application:40000000-0000-4000-8000-000000000005
+
+- question: Flaky test reduction in CI
+  relevant:
+    - application:40000000-0000-4000-8000-000000000009
+
+- question: Who reduced deployment time by migrating to AKS?
+  relevant:
+    - application:40000000-0000-4000-8000-000000000008
+
+- question: Best data modelling answers this quarter
+  relevant:
+    - application:40000000-0000-4000-8000-000000000004
+
+- question: Which roles pay more than 60k EUR?
+  relevant:
+    - job:20000000-0000-4000-8000-000000000003
+    - job:20000000-0000-4000-8000-000000000007
+
+# Paraphrases: little or no word overlap with the records, so BM25 alone struggles.
+- question: Someone who automates browser testing for web apps
+  relevant:
+    - candidate:30000000-0000-4000-8000-000000000008
+    - application:40000000-0000-4000-8000-000000000009
+
+- question: Which applicant is the strongest machine-learning engineer?
+  relevant:
+    - candidate:30000000-0000-4000-8000-000000000005
+    - application:40000000-0000-4000-8000-000000000006
+
+- question: Infrastructure person who moved servers into containers
+  relevant:
+    - application:40000000-0000-4000-8000-000000000008
+    - candidate:30000000-0000-4000-8000-000000000006
+
+- question: Who is a university student with no work history?
+  relevant:
+    - candidate:30000000-0000-4000-8000-000000000004
