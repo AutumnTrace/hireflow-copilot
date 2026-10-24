@@ -15,6 +15,20 @@ class Source(BaseModel):
     title: str
     source: str
     quotes: list[str]
+    # Ids of the HireFlow records behind the source, so a UI can link to them.
+    job_id: str | None = None
+    candidate_id: str | None = None
+
+    @classmethod
+    def of(cls, number: int, doc: Document, quotes: list[str]) -> Source:
+        return cls(
+            number=number,
+            title=doc.title,
+            source=doc.source,
+            quotes=quotes,
+            job_id=doc.metadata.get("job_id"),
+            candidate_id=doc.metadata.get("candidate_id"),
+        )
 
 
 class CitedAnswer(BaseModel):
@@ -61,7 +75,7 @@ def render(content: Sequence[Any], sent: Sequence[Document]) -> CitedAnswer:
             parts.append("".join(f"[{n}]" for n in markers))
 
     sources = [
-        Source(number=number, title=sent[index].title, source=sent[index].source, quotes=quotes[index])
+        Source.of(number, sent[index], quotes[index])
         for index, number in sorted(numbers.items(), key=lambda item: item[1])
         if index < len(sent)
     ]

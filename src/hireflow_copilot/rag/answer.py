@@ -59,10 +59,7 @@ def extractive_answer(question: str, index: HybridIndex, k: int) -> AskResult:
     """Demo mode: no model call. Returns the best-matching passages so the retrieval path is visible."""
     with tracer.start_as_current_span("retrieval.search"):
         hits = index.search(question, k=k)
-    sources = [
-        Source(number=n, title=h.document.title, source=h.document.source, quotes=list(h.document.blocks[:2]))
-        for n, h in enumerate(hits[:3], start=1)
-    ]
+    sources = [Source.of(n, h.document, list(h.document.blocks[:2])) for n, h in enumerate(hits[:3], start=1)]
     answer = (
         "Demo mode (no ANTHROPIC_API_KEY): showing the top passages instead of a generated answer."
         if hits
