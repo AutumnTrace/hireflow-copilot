@@ -1,6 +1,6 @@
 """Live end-to-end eval against the real Claude API, with a hard spend cap.
 
-    ANTHROPIC_API_KEY=... uv run python evals/run_live.py --budget 0.50
+    uv run python evals/run_live.py --budget 0.50       # key from ANTHROPIC_API_KEY or .env
     uv run python evals/run_live.py --only kafka,propose-move
 
 Each case gets a fresh fixture HireFlow, so proposals in one case can't leak into the next.
@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 import time
 from pathlib import Path
@@ -53,10 +52,6 @@ def main() -> int:
     parser.add_argument("--json", type=Path)
     args = parser.parse_args()
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("Set ANTHROPIC_API_KEY to run the live eval.", file=sys.stderr)
-        return 2
-
     cases = yaml.safe_load((HERE / "answers.yaml").read_text("utf-8"))
     if args.only:
         wanted = set(args.only.split(","))
@@ -69,6 +64,9 @@ def main() -> int:
         rate_limit_per_day=1000,
         otel_exporter="none",
     )
+    if settings.demo_mode:
+        print("Set ANTHROPIC_API_KEY (environment or .env) to run the live eval.", file=sys.stderr)
+        return 2
     embedder: Embedder = (
         HashingEmbedder() if args.embedder == "hashing" else FastEmbedEmbedder(settings.embedding_model)
     )
