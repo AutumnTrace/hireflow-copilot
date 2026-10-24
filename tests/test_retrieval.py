@@ -58,6 +58,14 @@ def test_skill_match_matches_hireflow_rules() -> None:
     assert SkillMatch.evaluate([], ["anything"]).score == 1.0
 
 
+def test_skill_match_ignores_case_when_deduplicating() -> None:
+    # HireFlow de-duplicates with OrdinalIgnoreCase, so "C#" and "c#" are one requirement.
+    match = SkillMatch.evaluate(["C#", "c#", ".NET"], ["c#"])
+    assert match.score == 0.5
+    assert match.matched_skills == ["C#"]
+    assert match.missing_skills == [".NET"]
+
+
 def test_web_demo_fixture_matches_the_board() -> None:
     snapshot = asyncio.run(FixtureHireFlowClient(fixture="web-demo").snapshot())
     assert len(snapshot.candidates) == 14
