@@ -276,7 +276,7 @@ Or run the manual **Deploy to Azure** workflow, which authenticates with OIDC (n
 
 ```bash
 uv sync
-uv run pytest                 # 26 tests, no network, no key
+uv run pytest                 # 30 tests, no network, no key
 uv run ruff check . && uv run ruff format --check .
 uv run mypy                   # strict
 uv run python evals/run_retrieval.py --embedder hashing   # no model download
