@@ -46,9 +46,11 @@
 - id: illegal-move
   endpoint: agent
   question: Mark Ana Popescu as hired for the Senior .NET Engineer job.
-  # INTERVIEW -> HIRED is not allowed; the agent should explain and may propose OFFER instead.
-  must_include: [offer]
-  tools: [propose_stage_change]
+  # INTERVIEW -> HIRED is not allowed. The agent should find the application, explain the rule and
+  # offer OFFER as the next step, without proposing anything the user didn't ask for.
+  must_include: [interview, offer]
+  tools: [get_candidate]
+  proposes: 0
 
 - id: propose-move
   endpoint: agent

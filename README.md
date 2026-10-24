@@ -175,10 +175,45 @@ On a corpus this small, keyword search is strong and dense retrieval on its own 
 [`evals/answers.yaml`](evals/answers.yaml) has 8 deterministic checks against the real API (no LLM judge). They cover required facts, forbidden hallucinations, an expected citation source, required tool calls and the expected number of proposals. One case asks for something HireFlow doesn't store, to check that the model says so instead of inventing an answer.
 
 ```bash
-ANTHROPIC_API_KEY=... uv run python evals/run_live.py --budget 0.50
+uv run python evals/run_live.py --budget 0.50     # key from ANTHROPIC_API_KEY or .env
 ```
 
 In GitHub Actions it is a manual workflow (`Live eval`) with a budget input, so it never runs by accident.
+
+Latest run (Claude Opus 5.5, `low` effort for `/ask`, `medium` for the agent): **8/8 passed, about $0.18 in total.**
+
+| case | endpoint | tools the agent chose | cost | time |
+|---|---|---|---:|---:|
+| kafka | ask | | $0.015 | 3.3s |
+| rejection-reason | ask | | $0.018 | 3.6s |
+| offer-amount | ask | | $0.014 | 2.4s |
+| unknown (not in HireFlow) | ask | | $0.016 | 3.1s |
+| ai-shortlist | agent | list_jobs, get_job_pipeline, search_hireflow | $0.062 | 11.0s |
+| interviews-this-week | agent | upcoming_interviews | $0.016 | 4.5s |
+| illegal-move | agent | get_candidate | $0.006 | 4.1s |
+| propose-move | agent | get_candidate, propose_stage_change | $0.019 | 6.6s |
+
+The first run failed `illegal-move`, and the eval was what was wrong. Asked to mark Ana as hired, the agent found her at INTERVIEW, explained that only OFFER, REJECTED or WITHDRAWN come next, and *asked* before proposing OFFER, exactly as the system prompt says. The case had required a proposal, so I changed it to check the right behaviour: explain the rule and propose nothing unasked.
+
+<details>
+<summary><b>Example agent answer</b>: "Who are the strongest applicants for the AI Engineer (LLM & RAG) job, and why?"</summary>
+
+> The job has only two applicants, and **Victoria Sandu** is clearly the stronger of the two.
+>
+> **1. Victoria Sandu: the strongest by a wide margin (in Screening)**
+> - **Skill match:** 80%: has Python, LLM, RAG, Azure; missing Docker.[1] She does run her system on Azure Container Apps, so she has probably used containers, but check Docker directly.
+> - **Has built this kind of system for real users:** At my current company I built a RAG assistant over 40k support tickets: hybrid BM25 plus vector retrieval, citations on every answer, and a nightly eval set of 300 questions that gates releases.[1]
+> - **Strong phone screen:** Irina Balan rated 5/5: Explained chunking trade-offs and how she measured retrieval recall before and after a re-ranker.[1]
+>
+> **2. Sergiu Botnari: weaker fit (still Applied, not yet reviewed)**
+> - **Skill match:** 40%: has Python, Docker; missing LLM, RAG, Azure.[2]
+> - He has solid backend skills, but he'd be learning LLM work on the job.
+>
+> **Next step:** Victoria is a natural fit to move to Interview. I can set that up as a pending action for a recruiter to confirm.
+
+Tools called: `list_jobs` → `get_job_pipeline` → `search_hireflow`. `[n]` markers come from Claude's native `search_result_location` citations, and the response's `sources` array carries the exact quoted text.
+
+</details>
 
 ## 💸 Cost guardrails
 
