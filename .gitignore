@@ -13,3 +13,4 @@ wheels/
 .pytest_cache/
 .ruff_cache/
 eval-results*.json
+server.log
