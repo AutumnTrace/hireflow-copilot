@@ -88,8 +88,10 @@ class SkillMatch(Model):
         have = {s.lower() for s in offered}
         # Distinct(StringComparer.OrdinalIgnoreCase): drop case-insensitive repeats, keep the first spelling.
         unique: list[str] = []
+        seen: set[str] = set()
         for skill in required:
-            if skill.lower() not in {u.lower() for u in unique}:
+            if skill.lower() not in seen:
+                seen.add(skill.lower())
                 unique.append(skill)
         matched = [s for s in unique if s.lower() in have]
         missing = [s for s in unique if s.lower() not in have]
