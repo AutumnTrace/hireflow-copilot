@@ -43,27 +43,35 @@ class HireFlowClient(Protocol):
     ) -> str: ...
 
 
-_RELATIVE = re.compile(r"^(?P<sign>[+-])(?P<days>\d+)d$")
+_RELATIVE = re.compile(r"^(?P<sign>[+-])(?P<days>\d+)d(?:@(?P<hour>\d{1,2}))?$")
+FIXTURES = {"seed": "hireflow_seed.json", "web-demo": "hireflow_web_demo.json"}
 
 
 def _resolve_dates(value: Any, now: datetime) -> Any:
-    """Fixture dates may be written as "+2d" / "-3d" so "upcoming interviews" never go stale."""
+    """Fixture dates may be relative ("+2d", "-3d@14" = 3 days ago at 14:00 UTC) so they never go stale."""
     if isinstance(value, dict):
         return {k: _resolve_dates(v, now) for k, v in value.items()}
     if isinstance(value, list):
         return [_resolve_dates(v, now) for v in value]
     if isinstance(value, str) and (m := _RELATIVE.match(value)):
         days = int(m["days"]) * (1 if m["sign"] == "+" else -1)
-        return (now + timedelta(days=days)).replace(minute=0, second=0, microsecond=0).isoformat()
+        moment = (now + timedelta(days=days)).replace(minute=0, second=0, microsecond=0)
+        if m["hour"] is not None:
+            moment = moment.replace(hour=int(m["hour"]))
+        return moment.isoformat()
     return value
 
 
 class FixtureHireFlowClient:
-    """In-memory HireFlow seeded from ``data/hireflow_seed.json``. Writes apply the real stage rules."""
+    """In-memory HireFlow loaded from a bundled dataset. Writes apply the real stage rules.
 
-    def __init__(self, data: dict[str, Any] | None = None) -> None:
+    ``seed`` is HireFlow's own demo seed plus extra candidates; ``web-demo`` is the dataset the
+    HireFlow Web demo runs in the browser, exported by its ``scripts/export-demo-data.ts``.
+    """
+
+    def __init__(self, data: dict[str, Any] | None = None, fixture: str = "seed") -> None:
         if data is None:
-            raw = resources.files("hireflow_copilot.data").joinpath("hireflow_seed.json").read_text("utf-8")
+            raw = resources.files("hireflow_copilot.data").joinpath(FIXTURES[fixture]).read_text("utf-8")
             data = json.loads(raw)
         self._snapshot = Snapshot.model_validate(_resolve_dates(data, datetime.now(UTC)))
         companies = {c.id: c.name for c in self._snapshot.companies}

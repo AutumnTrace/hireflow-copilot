@@ -68,6 +68,17 @@ COPILOT_SOURCE=graphql COPILOT_HIREFLOW_URL=http://localhost:5230/graphql uv run
 
 The copilot gets a recruiter token from HireFlow's development `/auth/token` endpoint. Set `COPILOT_HIREFLOW_TOKEN` to use your own instead.
 
+### Inside HireFlow Web
+
+[HireFlow Web](https://github.com/AutumnTrace/hireflow-web) has a **Copilot** panel that calls this API:
+
+- **Live mode:** run HireFlow, this copilot with `COPILOT_SOURCE=graphql`, and the web app connected to the same API. Proposals come back with their mutation input (`proposed_actions[].params`), and the web app applies them with its own HireFlow session, so the board updates through its existing subscription. Browser access is limited to `COPILOT_CORS_ORIGINS` (by default the Vite dev and preview servers).
+- **The public demo** runs entirely in the browser, with no copilot server. It replays real answers recorded against `COPILOT_FIXTURE=web-demo`: the same dataset the demo board shows, exported by the web repo's `scripts/export-demo-data.ts`. To refresh them:
+
+```bash
+uv run python scripts/record_answers.py ../hireflow-web/src/copilot/recorded.json --budget 0.50
+```
+
 ### Whole stack in Docker
 
 ```bash
