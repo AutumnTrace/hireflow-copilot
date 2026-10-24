@@ -150,10 +150,14 @@ class GraphQLHireFlowClient:
         response = await self._http.post(
             self._url, json={"query": query, "variables": variables or {}}, headers=await self._auth_header()
         )
-        response.raise_for_status()
-        body = response.json()
+        # GraphQL servers report validation failures (such as the cost limit) as 400 with an
+        # "errors" body; surface that message rather than a bare HTTP status.
+        body = response.json() if response.headers.get("content-type", "").startswith("application") else {}
         if body.get("errors"):
-            raise HireFlowError("GraphQLError", "; ".join(e.get("message", "?") for e in body["errors"]))
+            first = body["errors"][0]
+            code = first.get("extensions", {}).get("code", "GraphQLError")
+            raise HireFlowError(code, "; ".join(e.get("message", "?") for e in body["errors"]))
+        response.raise_for_status()
         data: dict[str, Any] = body["data"]
         return data
 
