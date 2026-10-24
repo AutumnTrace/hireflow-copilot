@@ -83,3 +83,15 @@ async def test_mutation_errors_become_hireflow_errors() -> None:
     with pytest.raises(HireFlowError) as exc:
         await GraphQLHireFlowClient(URL).move_application("a1", Stage.HIRED, None)
     assert exc.value.kind == "InvalidStageTransitionError"
+
+
+@respx.mock
+async def test_graphql_errors_on_400_keep_their_message() -> None:
+    respx.post("http://hireflow.test/auth/token").respond(json={"accessToken": "dev-token"})
+    error = {"message": "The maximum allowed field cost was exceeded.", "extensions": {"code": "HC0047"}}
+    respx.post(URL).respond(400, json={"errors": [error]})
+
+    with pytest.raises(HireFlowError) as exc:
+        await GraphQLHireFlowClient(URL).snapshot()
+    assert exc.value.kind == "HC0047"
+    assert "field cost" in exc.value.message

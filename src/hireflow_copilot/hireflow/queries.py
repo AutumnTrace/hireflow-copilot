@@ -18,10 +18,12 @@ query Candidates($after: String) {
 }
 """
 
-# Applications are loaded through their job so one query returns the whole pipeline.
+# Applications are loaded through their job so one query returns the whole pipeline. HireFlow
+# rejects operations above 2,000 field cost (HC0047); with this nesting, 50 jobs per page cost
+# ~2,760 and 20 cost ~1,100, so the page size keeps headroom for jobs with many applications.
 JOBS = """
 query Jobs($after: String) {
-  jobs(first: 50, after: $after) {
+  jobs(first: 20, after: $after) {
     pageInfo { hasNextPage endCursor }
     nodes {
       id companyId title description location workMode employmentType status requiredSkills
