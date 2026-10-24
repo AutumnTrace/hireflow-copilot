@@ -205,4 +205,3 @@ def test_agent_stops_at_step_limit() -> None:
     assert body["stop"] == "max_steps"
     assert len(fake.messages.requests) == 2
     assert "Stopped after 2 steps" in body["answer"]
-
