@@ -7,6 +7,7 @@ A proposed write is stored as a pending action and returned to the caller, who c
 from __future__ import annotations
 
 import json
+import unicodedata
 import uuid
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
@@ -115,6 +116,12 @@ def _json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, default=str)
 
 
+def _fold(text: str) -> str:
+    """Case- and accent-insensitive form, so "stefan turcanu" finds "Ștefan Țurcanu"."""
+    decomposed = unicodedata.normalize("NFKD", text.casefold())
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+
+
 async def search_hireflow(ctx: ToolContext, args: SearchInput) -> ToolResult:
     hits = ctx.kb.index.search(args.query, k=ctx.top_k, kinds={args.kind} if args.kind else None)
     if not hits:
@@ -169,8 +176,12 @@ async def get_job_pipeline(ctx: ToolContext, args: PipelineInput) -> ToolResult:
 
 async def get_candidate(ctx: ToolContext, args: CandidateInput) -> ToolResult:
     snap = ctx.snapshot
-    needle = args.name_or_email.lower()
-    matches = [c for c in snap.candidates if needle in c.full_name.lower() or needle == c.email.lower()]
+    needle = _fold(args.name_or_email.strip())
+    words = needle.split()
+    if not words:
+        raise ToolError("Give a candidate's name or email address.")
+    # Every word must appear somewhere in the name, in any order: "popescu ana" finds "Ana Popescu".
+    matches = [c for c in snap.candidates if needle == _fold(c.email) or all(w in _fold(c.full_name) for w in words)]
     if not matches:
         raise ToolError(f"No candidate matches '{args.name_or_email}'.")
     out = []
