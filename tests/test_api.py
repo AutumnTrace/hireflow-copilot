@@ -217,3 +217,9 @@ def test_cors_allows_the_web_app(demo_client: TestClient) -> None:
         "/v1/ask", headers={"Origin": "https://evil.example", "Access-Control-Request-Method": "POST"}
     )
     assert "access-control-allow-origin" not in blocked.headers
+
+
+def test_openapi_reports_the_package_version(demo_client: TestClient) -> None:
+    from importlib.metadata import version
+
+    assert demo_client.get("/openapi.json").json()["info"]["version"] == version("hireflow-copilot")

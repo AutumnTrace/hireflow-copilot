@@ -8,6 +8,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime
+from importlib.metadata import version
 from typing import Annotated, Literal
 
 import anthropic
@@ -88,7 +89,7 @@ def create_app(
 
     app = FastAPI(
         title="HireFlow Copilot",
-        version="0.1.0",
+        version=version("hireflow-copilot"),
         description="RAG and a tool-using Claude agent over the HireFlow GraphQL API.",
         lifespan=lifespan,
     )

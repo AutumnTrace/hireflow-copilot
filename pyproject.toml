@@ -1,6 +1,6 @@
 [project]
 name = "hireflow-copilot"
-version = "0.1.0"
+version = "0.2.1"
 description = "RAG and a tool-using Claude agent over the HireFlow GraphQL API, with evals, tracing and cost guardrails"
 readme = "README.md"
 requires-python = ">=3.12"
