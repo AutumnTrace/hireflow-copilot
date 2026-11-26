@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      anthropic:
+        patterns: ["anthropic"]
+      web:
+        patterns: ["fastapi", "uvicorn*", "starlette", "httpx", "pydantic*"]
+      opentelemetry:
+        # The OTel packages release together; a split update can leave mismatched pins.
+        patterns: ["opentelemetry-*", "azure-monitor-opentelemetry"]
+      dev:
+        dependency-type: development
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    ignore:
+      # .python-version and CI pin Python 3.12; the image moves with them, deliberately.
+      - dependency-name: "python"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
